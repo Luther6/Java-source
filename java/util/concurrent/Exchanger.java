@@ -557,6 +557,11 @@ public class Exchanger<V> {
      * @throws InterruptedException if the current thread was
      *         interrupted while waiting
      */
+    /**
+     *  正常结束情况:
+     *  1、有两个线程都达到了exchange()
+     *  2、在一个线程进入了exchange()点,没有其他线程进入时打断这个线程
+     */
     @SuppressWarnings("unchecked")
     public V exchange(V x) throws InterruptedException {
         Object v;

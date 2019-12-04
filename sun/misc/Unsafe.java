@@ -1068,6 +1068,11 @@ public final class Unsafe {
         do {
             v = getIntVolatile(o, offset);
         } while (!compareAndSwapInt(o, offset, v, newValue));
+        /**
+         * 首先拿出当前位置的值,然后再进行更改来比较 offset位置的值是否和我们的刚刚拿出的值相同(防止多线程进行改变)
+         * 实现原理在compareAnaSwapInt()层面进行了CPU级别的加锁。如果不相同那么证明已经更改了。那么就进行再次插入
+         * 这里防止拿出来的值 是一个已经变化的值。 一般需要这种操作都是需要拿出来才进行的。(保证可见性与原子性)
+         */
         return v;
     }
 
@@ -1087,6 +1092,7 @@ public final class Unsafe {
         do {
             v = getLongVolatile(o, offset);
         } while (!compareAndSwapLong(o, offset, v, newValue));
+        //这里是一样的但是并不保证数组内部的并发性
         return v;
     }
 

@@ -153,6 +153,16 @@ public class AtomicStampedReference<V> {
             ((newReference == current.reference &&
               newStamp == current.stamp) ||
              casPair(current, Pair.of(newReference, newStamp)));
+        /**
+         * 这个类添加了一个赋值的类似Sql中版本号的概念,
+         * 来判断版本是否变化。
+         * 如果要更新成功的话,那么当前的reference要和我们期望的一样。注意这里比较的是内存地址
+         * 并且版本号要相同。
+         * 并且更新成功(也可以是没有任何更新的操作)(newReference == current.reference &&
+         *               newStamp == current.stamp)
+         *
+         *               这里是用来解决 CAS中的ABA问题: A -> C | A ->B ->A
+         */
     }
 
     /**

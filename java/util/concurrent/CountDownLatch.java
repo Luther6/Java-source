@@ -272,6 +272,12 @@ public class CountDownLatch {
      * @throws InterruptedException if the current thread is interrupted
      *         while waiting
      */
+    /**
+     * await() 需要注意的是如何结束等待的方法
+     * 1、等到CountDownLatch中 的标记数字 为0
+     * 2、打断被阻塞住的线程(谁调用了当前方法的线程)
+     * 3、在规定的时间内没有完成任务将会直接进行下一步。并不会抛出TimeOut的异常
+     */
     public boolean await(long timeout, TimeUnit unit)
         throws InterruptedException {
         return sync.tryAcquireSharedNanos(1, unit.toNanos(timeout));

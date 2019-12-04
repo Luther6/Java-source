@@ -274,6 +274,9 @@ public class CyclicBarrier {
      *        tripped, or {@code null} if there is no action
      * @throws IllegalArgumentException if {@code parties} is less than 1
      */
+    /**
+     * 在CyclicBarrier正常结束后,由最后一个进入的线程来执行Runnable
+     */
     public CyclicBarrier(int parties, Runnable barrierAction) {
         if (parties <= 0) throw new IllegalArgumentException();
         this.parties = parties;
@@ -428,6 +431,14 @@ public class CyclicBarrier {
      *         when {@code await} was called, or the barrier action (if
      *         present) failed due to an exception
      */
+    /**
+     *  CyclicBarrier的当前线程结束操作就要比CountDownLatch多了
+     *  1、固定的线程都正常的执行到了await()
+     *  2、有其他的线程打断了正在处于await()的当前线程     Throw InterruptedException;
+     *  3、在一同加入CyclicBarrier的线程await()的moiniter的线程有被中断的线程。则会打断处于await()的状态中的线程 :throw BrokenBarrierException
+     *  4、在一同加入CyclicBarrier的线程await()的moiniter的线程有超时的线程。则会打断处于await()的状态中的线程 :throw BrokenBarrierException,自身线程:throw TimeOutException
+     *  5、在进入CyclicBarrier的线程await()的线程时，此时外部调用了reset()，则会打断处于await()的状态中的线程 :throw BrokenBarrierException
+     */
     public int await(long timeout, TimeUnit unit)
         throws InterruptedException,
                BrokenBarrierException,
@@ -437,7 +448,7 @@ public class CyclicBarrier {
 
     /**
      * Queries if this barrier is in a broken state.
-     *
+     * 判断CyclicBarrier是否被Broken
      * @return {@code true} if one or more parties broke out of this
      *         barrier due to interruption or timeout since
      *         construction or the last reset, or a barrier action
@@ -476,7 +487,7 @@ public class CyclicBarrier {
     /**
      * Returns the number of parties currently waiting at the barrier.
      * This method is primarily useful for debugging and assertions.
-     *
+     *  获取处于await()的线程的个数
      * @return the number of parties currently blocked in {@link #await}
      */
     public int getNumberWaiting() {
